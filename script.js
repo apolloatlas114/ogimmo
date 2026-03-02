@@ -43,3 +43,50 @@
   heroMedia.addEventListener("mousemove", onMove);
   heroMedia.addEventListener("mouseleave", onLeave);
 })();
+
+(() => {
+  const openButtons = [...document.querySelectorAll("[data-modal-open]")];
+  const closeButtons = [...document.querySelectorAll("[data-modal-close]")];
+  const overlays = [...document.querySelectorAll(".modal-overlay")];
+
+  const closeAll = () => {
+    overlays.forEach((overlay) => {
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+    });
+    document.body.classList.remove("modal-open");
+  };
+
+  openButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      const modalId = button.getAttribute("data-modal-open");
+      const target = document.querySelector(`.modal-overlay[data-modal-id="${modalId}"]`);
+      if (!target) {
+        return;
+      }
+      closeAll();
+      target.classList.add("is-open");
+      target.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    });
+  });
+
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", closeAll);
+  });
+
+  overlays.forEach((overlay) => {
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        closeAll();
+      }
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeAll();
+    }
+  });
+})();
