@@ -497,6 +497,69 @@
       </div>
     </footer>
 
+    <section
+      class="cookie-banner"
+      id="cookie-banner"
+      role="dialog"
+      aria-label="Cookie-Einstellungen"
+      aria-live="polite"
+      aria-hidden="true"
+    >
+      <div class="cookie-banner-inner">
+        <div class="cookie-copy">
+          <h2>Cookie-Einstellungen</h2>
+          <p>
+            Wir verwenden notwendige Cookies, um den technischen Betrieb dieser Website sicherzustellen. Optionale
+            Cookies helfen uns, Nutzung und Performance zu verbessern.
+            <a href="#" data-modal-open="datenschutz-modal">Datenschutz ansehen</a>.
+          </p>
+        </div>
+        <div class="cookie-actions">
+          <button class="cookie-btn cookie-btn-secondary" type="button" data-cookie-action="essential">
+            Nur notwendige
+          </button>
+          <button
+            class="cookie-btn cookie-btn-ghost"
+            type="button"
+            data-cookie-action="settings"
+            aria-expanded="false"
+            aria-controls="cookie-settings-panel"
+          >
+            Einstellungen
+          </button>
+          <button class="cookie-btn cookie-btn-primary" type="button" data-cookie-action="accept-all">
+            Alle akzeptieren
+          </button>
+        </div>
+        <div class="cookie-settings" id="cookie-settings-panel" data-cookie-settings hidden>
+          <div class="cookie-option">
+            <label>
+              <input type="checkbox" checked disabled />
+              Notwendige Cookies
+            </label>
+            <span>Immer aktiv</span>
+          </div>
+          <div class="cookie-option">
+            <label>
+              <input type="checkbox" name="cookie-analytics" />
+              Analyse &amp; Reichweitenmessung
+            </label>
+            <span>Optional</span>
+          </div>
+          <div class="cookie-option">
+            <label>
+              <input type="checkbox" name="cookie-marketing" />
+              Marketing &amp; Attribution
+            </label>
+            <span>Optional</span>
+          </div>
+          <button class="cookie-btn cookie-btn-save" type="button" data-cookie-action="save-selection">
+            Auswahl speichern
+          </button>
+        </div>
+      </div>
+    </section>
+
     <div class="modal-overlay" data-modal-id="impressum-modal" aria-hidden="true">
       <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="impressum-title">
         <button class="modal-close" data-modal-close aria-label="Schließen">×</button>
