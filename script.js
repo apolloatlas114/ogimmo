@@ -1,4 +1,54 @@
-﻿(() => {
+(() => {
+  const themeStorageKey = "ics_theme_mode_v1";
+  const toggleButton = document.getElementById("theme-toggle");
+  if (!toggleButton) {
+    return;
+  }
+
+  const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+  const normalizeTheme = (value) => {
+    if (value === "light" || value === "dark") {
+      return value;
+    }
+    return null;
+  };
+
+  const applyTheme = (theme) => {
+    const isLight = theme === "light";
+    const icon = toggleButton.querySelector(".theme-toggle-icon");
+    document.body.classList.toggle("theme-light", isLight);
+    document.body.classList.toggle("theme-dark", !isLight);
+    document.body.setAttribute("data-theme", theme);
+    toggleButton.setAttribute("data-mode", theme);
+    if (icon) {
+      icon.textContent = isLight ? "\u263e" : "\u2600";
+    }
+    toggleButton.setAttribute("aria-pressed", String(isLight));
+    toggleButton.setAttribute("aria-label", isLight ? "Zu Dark Mode wechseln" : "Zu White Mode wechseln");
+  };
+
+  let storedTheme = null;
+  try {
+    storedTheme = normalizeTheme(localStorage.getItem(themeStorageKey));
+  } catch (error) {
+    storedTheme = null;
+  }
+
+  const fallbackTheme = document.body.classList.contains("theme-light") ? "light" : prefersLight ? "light" : "dark";
+  const initialTheme = storedTheme || fallbackTheme;
+  applyTheme(initialTheme);
+
+  toggleButton.addEventListener("click", () => {
+    const nextTheme = document.body.classList.contains("theme-light") ? "dark" : "light";
+    applyTheme(nextTheme);
+    try {
+      localStorage.setItem(themeStorageKey, nextTheme);
+    } catch (error) {
+      // Ignore storage write failures.
+    }
+  });
+})();
+(() => {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const revealItems = [...document.querySelectorAll("[data-reveal]")];
@@ -196,5 +246,67 @@
         updateBannerOffset();
       }
     });
+  });
+})();
+
+
+(() => {
+  const offerCards = [...document.querySelectorAll("[data-solution-offer]")];
+  if (!offerCards.length) {
+    return;
+  }
+
+  offerCards.forEach((offerCard) => {
+    const panels = [...offerCard.querySelectorAll("[data-solution-panel]")];
+    const steps = [...offerCard.querySelectorAll("[data-solution-step]")];
+    const prevButton = offerCard.querySelector("[data-solution-prev]");
+    const nextButton = offerCard.querySelector("[data-solution-next]");
+
+    if (!panels.length || !prevButton || !nextButton) {
+      return;
+    }
+
+    let currentIndex = panels.findIndex((panel) => panel.classList.contains("is-active"));
+    if (currentIndex < 0) {
+      currentIndex = 0;
+    }
+
+    const render = () => {
+      panels.forEach((panel, index) => {
+        const isActive = index === currentIndex;
+        panel.classList.toggle("is-active", isActive);
+        panel.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      steps.forEach((step, index) => {
+        step.classList.toggle("offer-card__progress-step--active", index === currentIndex);
+      });
+
+      prevButton.disabled = currentIndex === 0;
+      nextButton.disabled = currentIndex === panels.length - 1;
+      prevButton.setAttribute("aria-disabled", String(prevButton.disabled));
+      nextButton.setAttribute("aria-disabled", String(nextButton.disabled));
+
+      offerCard.classList.toggle("is-first", currentIndex === 0);
+      offerCard.classList.toggle("is-last", currentIndex === panels.length - 1);
+    };
+
+    prevButton.addEventListener("click", () => {
+      if (currentIndex <= 0) {
+        return;
+      }
+      currentIndex -= 1;
+      render();
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (currentIndex >= panels.length - 1) {
+        return;
+      }
+      currentIndex += 1;
+      render();
+    });
+
+    render();
   });
 })();
